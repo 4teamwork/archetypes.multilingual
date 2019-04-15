@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
 from archetypes.multilingual.interfaces import IArchetypesTranslatable
+from plone import api
 from plone.app.multilingual.interfaces import ILanguage
 from plone.app.multilingual.interfaces import ILanguageIndependentFieldsManager
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.app.multilingual.interfaces import ITranslationManager
 from zope.component import queryAdapter
 from zope.event import notify
@@ -94,6 +96,12 @@ def archetypes_creation_handler(obj, event):
     - IObjectAddedEvent
     - IObjectCopiedEvent
     """
+
+    # Don't do anything if plone.app.multilingual is not active/installed
+    request = api.portal.get().REQUEST
+    if not IPloneAppMultilingualInstalled.providedBy(request):
+        return
+
     # if not translatable
     if (not IObjectRemovedEvent.providedBy(event)
        and IDexterityContent.providedBy(obj)):

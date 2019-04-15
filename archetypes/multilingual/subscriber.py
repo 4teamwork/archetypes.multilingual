@@ -31,6 +31,12 @@ class LanguageIndependentModifier(object):
 
     def __call__(self, content, event):
         """Called by the event system."""
+
+        # Don't do anything if plone.app.multilingual is not active/installed
+        request = api.portal.get().REQUEST
+        if not IPloneAppMultilingualInstalled.providedBy(request):
+            return
+
         if IArchetypesTranslatable.providedBy(content):
             if IObjectModifiedEvent.providedBy(event):
                 self.handle_modified(content)

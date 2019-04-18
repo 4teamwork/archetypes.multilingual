@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
 from archetypes.multilingual.interfaces import IArchetypesTranslatable
-from plone import api
 from plone.app.multilingual.interfaces import ILanguage
 from plone.app.multilingual.interfaces import ILanguageIndependentFieldsManager
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
@@ -16,7 +15,6 @@ from plone.app.multilingual.subscriber import set_recursive_language
 from plone.app.multilingual.interfaces import IMutableTG
 from plone.app.multilingual.interfaces import ITranslatable
 from plone.app.multilingual.interfaces import LANGUAGE_INDEPENDENT
-
 from zope.globalrequest import getRequest
 from zope.lifecycleevent import modified
 from zope.lifecycleevent.interfaces import IObjectRemovedEvent
@@ -33,8 +31,7 @@ class LanguageIndependentModifier(object):
         """Called by the event system."""
 
         # Don't do anything if plone.app.multilingual is not active/installed
-        request = api.portal.get().REQUEST
-        if not IPloneAppMultilingualInstalled.providedBy(request):
+        if not IPloneAppMultilingualInstalled.providedBy(getRequest()):
             return
 
         if IArchetypesTranslatable.providedBy(content):
@@ -104,8 +101,7 @@ def archetypes_creation_handler(obj, event):
     """
 
     # Don't do anything if plone.app.multilingual is not active/installed
-    request = api.portal.get().REQUEST
-    if not IPloneAppMultilingualInstalled.providedBy(request):
+    if not IPloneAppMultilingualInstalled.providedBy(getRequest()):
         return
 
     # if not translatable
